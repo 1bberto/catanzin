@@ -1,9 +1,4 @@
-# Colonizers
-
-<!-- [![Build Status](https://travis-ci.org/colonizers/colonizers.svg?branch=master)](https://travis-ci.org/colonizers/colonizers)
-[![Dependency Status](https://david-dm.org/colonizers/colonizers.svg)](https://david-dm.org/colonizers/colonizers)
-[![devDependency Status](https://david-dm.org/colonizers/colonizers/dev-status.svg)](https://david-dm.org/colonizers/colonizers#info=devDependencies)
-[![Code Climate](https://codeclimate.com/github/colonizers/colonizers/badges/gpa.svg)](https://codeclimate.com/github/colonizers/colonizers) -->
+# Catanzin (based on Colonizers)
 
 A HTML5 multiplayer game, based on the popular board game ["Catan" (formerly "The Settlers of Catan")](http://en.wikipedia.org/wiki/The_Settlers_of_Catan) by Klaus Teuber.
 
@@ -21,19 +16,33 @@ Make sure you have the following installed:
 
 ```sh
 git clone https://github.com/colonizers/colonizers.git
-cd colonizers
-yarn
-cd packages/colonizers-client
-gulp tilesets
+
+cd catanzin/packages/colonizers/docker
+
+docker-compose up -d
+
 cd ../..
-yarn start
+
+cd catanzin/packages/colonizers-client
+
+npm install
+
+npx npm-force-resolutions
+
+npm install
+
+gulp tilesets
+
+cd ../..
+
+cd /packages/colonizers
+
+npm install
+
+npm start
 ```
 
-The app should now be running at [http://localhost:3000](http://localhost:3000)
-
-<!-- ## Try it out on Heroku
-
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy) -->
+The app should now be running at [http://localhost:5000](http://localhost:5000)
 
 ## A work in progress!
 

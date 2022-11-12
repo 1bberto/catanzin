@@ -10,7 +10,8 @@ exports.register = function(server, options, next) {
   options = Hoek.applyToDefaults(
     {
       connection: {
-        server: 'localhost'
+        server: 'localhost',
+        auth: 'guest:guest'
       },
       exchange: 'socket-io.exchange',
       queue: 'socket-io.queue',
