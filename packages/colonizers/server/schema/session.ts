@@ -1,17 +1,14 @@
-'use strict';
-
-var mongoose = require('mongoose');
-var uuid = require('node-uuid');
-var Schema = mongoose.Schema;
+import { Schema } from "mongoose";
+import uuid from "node-uuid";
 
 var UserId = {
   type: Schema.Types.ObjectId,
-  ref: 'User'
+  ref: "User"
 };
 
 var SessionSchema = new Schema({
   user: UserId,
-  type: { type: String, enum: ['web'], default: 'web' },
+  type: { type: String, enum: ["web"], default: "web" },
   token: { type: String, default: uuid },
   created: { type: Date, default: Date.now },
   scope: [String],
@@ -21,7 +18,7 @@ var SessionSchema = new Schema({
   userAgent: String
 });
 
-SessionSchema.virtual('id').get(function() {
+SessionSchema.virtual("id").get(function() {
   return this._id.toString();
 });
 
@@ -43,4 +40,4 @@ SessionSchema.methods.toJSON = function() {
   };
 };
 
-module.exports = SessionSchema;
+export default SessionSchema;

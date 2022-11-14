@@ -1,12 +1,9 @@
-'use strict';
-
-var mongoose = require('mongoose');
-var GameContext = require('colonizers-core/lib/game-context');
-var Schema = mongoose.Schema;
+import mongoose, { Schema } from "mongoose";
+import GameContext from "colonizers-core/lib/game-context";
 
 var UserId = {
   type: Schema.Types.ObjectId,
-  ref: 'User'
+  ref: "User"
 };
 
 var MembershipSchema = new Schema({
@@ -14,7 +11,7 @@ var MembershipSchema = new Schema({
   date: { type: Date, default: Date.now }
 });
 
-MembershipSchema.virtual('id').get(function() {
+MembershipSchema.virtual("id").get(function() {
   return this._id.toString();
 });
 
@@ -31,8 +28,8 @@ var RoomSchema = new Schema({
   owner: UserId,
   status: {
     type: String,
-    default: 'open',
-    enum: ['open', 'started', 'finished']
+    default: "open",
+    enum: ["open", "started", "finished"]
   },
   users: [MembershipSchema],
   numPlayers: Number,
@@ -43,7 +40,7 @@ var RoomSchema = new Schema({
   gameOptions: Schema.Types.Mixed
 });
 
-RoomSchema.virtual('id').get(function() {
+RoomSchema.virtual("id").get(function() {
   return this._id.toString();
 });
 
@@ -58,7 +55,7 @@ RoomSchema.methods.toJSON = function() {
 };
 
 RoomSchema.methods.join = function(userId, cb) {
-  if (userId === 'string') {
+  if (userId === "string") {
     userId = new mongoose.Types.ObjectId(userId);
   }
 
@@ -95,8 +92,8 @@ RoomSchema.methods.leave = function(userId, cb) {
     return cb();
   }
 
-  if (this.status !== 'open') {
-    return cb('Game has already started.');
+  if (this.status !== "open") {
+    return cb("Game has already started.");
   }
 
   this.users.pull({ _id: member._id });
@@ -111,7 +108,7 @@ RoomSchema.methods.leave = function(userId, cb) {
 };
 
 RoomSchema.methods.preEvent = function(event, data, next) {
-  var GameEvent = mongoose.model('GameEvent');
+  var GameEvent = mongoose.model("GameEvent");
 
   GameEvent.create(
     {
@@ -129,7 +126,7 @@ RoomSchema.methods.postEvent = function(event, data, next) {
 };
 
 RoomSchema.methods.start = function(callback) {
-  if (this.status !== 'open') {
+  if (this.status !== "open") {
     return;
   }
 
@@ -137,7 +134,7 @@ RoomSchema.methods.start = function(callback) {
     return;
   }
 
-  this.status = 'started';
+  this.status = "started";
 
   var options = {
     gameOptions: this.gameOptions,
@@ -166,7 +163,7 @@ RoomSchema.methods.start = function(callback) {
 };
 
 RoomSchema.methods.getGameContext = function(options) {
-  if (this.status === 'open') {
+  if (this.status === "open") {
     return undefined;
   }
 
@@ -185,7 +182,7 @@ RoomSchema.methods.getGameContext = function(options) {
 
 RoomSchema.statics.getUsers = function(roomId, callback) {
   this.findById(roomId)
-    .populate('users.user')
+    .populate("users.user")
     .exec(function(err, room) {
       if (err || !room) {
         return callback(err, room);
@@ -197,4 +194,4 @@ RoomSchema.statics.getUsers = function(roomId, callback) {
     });
 };
 
-module.exports = RoomSchema;
+export default RoomSchema;

@@ -6,9 +6,9 @@ const contentBase = path.join(__dirname, 'dist');
 module.exports = {
   mode: 'development',
   entry: {
-    game: './server/web/room/game.js',
-    room: './server/web/room/room.js',
-    site: './server/assets/js/site.js'
+    game: './server/web/room/game.ts',
+    room: './server/web/room/room.ts',
+    site: './server/assets/js/site.ts'
   },
   output: {
     filename: '[name].bundle.js',
@@ -19,6 +19,11 @@ module.exports = {
       {
         test: /\.html$/i,
         use: 'raw-loader'
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
       }
     ]
   },
@@ -33,6 +38,7 @@ module.exports = {
     compress: true,
     overlay: true,
     port: 5000,
+    hotOnly: true,
     proxy: [
       {
         context: '/',

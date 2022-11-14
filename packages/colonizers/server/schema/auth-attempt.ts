@@ -1,7 +1,4 @@
-'use strict';
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import { Schema } from "mongoose";
 
 var AuthAttemptSchema = new Schema({
   username: { type: String, required: true },
@@ -37,4 +34,4 @@ AuthAttemptSchema.statics.abuseDetected = function(ip, username, callback) {
   );
 };
 
-module.exports = AuthAttemptSchema;
+export default AuthAttemptSchema;

@@ -1,13 +1,10 @@
-'use strict';
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import { Schema } from "mongoose";
 
 var GameEventSchema = new Schema({
   time: { type: Date, default: Date.now },
   room: {
     type: Schema.Types.ObjectId,
-    ref: 'Room',
+    ref: "Room",
     required: true
   },
   event: {
@@ -17,7 +14,7 @@ var GameEventSchema = new Schema({
   data: Schema.Types.Mixed
 });
 
-GameEventSchema.virtual('id').get(function() {
+GameEventSchema.virtual("id").get(function() {
   return this._id.toString();
 });
 
@@ -31,4 +28,4 @@ GameEventSchema.methods.toJSON = function() {
   };
 };
 
-module.exports = GameEventSchema;
+export default GameEventSchema;

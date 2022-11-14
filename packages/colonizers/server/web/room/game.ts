@@ -1,14 +1,15 @@
-'use strict';
+"use strict";
 
-var $ = require('jquery');
-var io = require('socket.io-client');
-var Client = require('colonizers-client');
-var GameSerializer = require('colonizers-core/lib/game-serializer');
-var EmitterQueue = require('colonizers-core/lib/emitter-queue');
-var GameCoordinator = require('colonizers-core/lib/game-coordinator');
-var Factory = Client.Factory;
+import $ from "jquery";
+import Client from "colonizers-client";
+import io from "socket.io-client";
+import GameSerializer from "colonizers-core/lib/game-serializer";
+import EmitterQueue from "colonizers-core/lib/emitter-queue";
+import GameCoordinator from "colonizers-core/lib/game-coordinator";
 
-$.get('/tilesets/modern.json', function(tileset) {
+const Factory = Client.Factory;
+
+$.get("/tilesets/modern.json", function(tileset) {
   var socket = io();
   var emitterQueue = new EmitterQueue(socket);
   var factory = new Factory({
@@ -22,7 +23,7 @@ $.get('/tilesets/modern.json', function(tileset) {
     emitterQueue: emitterQueue,
     clientUsers: [window.context.userId],
     emitEvent: function(playerId, event, data) {
-      socket.emit('game-event', {
+      socket.emit("game-event", {
         roomId: window.context.roomId,
         event: event,
         data: data
@@ -30,19 +31,19 @@ $.get('/tilesets/modern.json', function(tileset) {
     }
   });
 
-  socket.on('room_closed', function() {
-    window.location = '/lobby';
+  socket.on("room_closed", function() {
+    window.location.href = "/lobby";
   });
 
-  socket.on('connect', function() {
+  socket.on("connect", function() {
     var roomId = window.context.roomId;
 
-    socket.emit('join-game', roomId);
+    socket.emit("join-game", roomId);
 
-    socket.emit('room-users', { roomId: roomId }, function(users) {
+    socket.emit("room-users", { roomId: roomId }, function(users) {
       client.setUsers(users);
 
-      socket.emit('get-game', { roomId: roomId }, function(data) {
+      socket.emit("get-game", { roomId: roomId }, function(data) {
         var game = new GameSerializer(factory).deserialize(data);
         emitterQueue.kill();
         gameCoordinator.setGame(game);

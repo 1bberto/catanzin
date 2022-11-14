@@ -1,12 +1,10 @@
-'use strict';
-
-var Joi = require('joi');
-var mongoose = require('mongoose');
+import Joi from "@hapi/joi";
+import mongoose from "mongoose";
 
 exports.register = function(server, options, next) {
   server.route({
-    method: 'GET',
-    path: '/room/{roomId}',
+    method: "GET",
+    path: "/room/{roomId}",
     config: {
       validate: {
         params: {
@@ -15,30 +13,30 @@ exports.register = function(server, options, next) {
       }
     },
     handler: function(request, reply) {
-      var Room = mongoose.model('Room');
+      var Room = mongoose.model("Room");
 
-      Room.findById(request.params.roomId, function(err, room) {
+      Room.findById(request.params.roomId, function(err: any, room) {
         if (err) {
           return reply(err);
         }
 
-        if (room.status === 'open') {
-          reply.view('room/room', {
+        if (room.status === "open") {
+          reply.view("room/room", {
             context: {
               roomId: request.params.roomId,
               userId: request.auth.credentials.userId
             },
-            script: 'room/room'
+            script: "room/room"
           });
         } else {
           reply.view(
-            'room/game',
+            "room/game",
             {
               context: {
                 roomId: request.params.roomId,
                 userId: request.auth.credentials.userId
               },
-              script: 'room/game'
+              script: "room/game"
             },
             {
               layout: false
@@ -53,5 +51,5 @@ exports.register = function(server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/room'
+  name: "web/room"
 };

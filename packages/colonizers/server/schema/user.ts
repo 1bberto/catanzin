@@ -1,15 +1,13 @@
-'use strict';
+import bcrypt from "bcryptjs";
+import { Schema } from "mongoose";
+import crypto from "crypto";
+import url from "url";
 
-var bcrypt = require('bcryptjs');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var crypto = require('crypto');
-var url = require('url');
 var md5 = function(word) {
   return crypto
-    .createHash('md5')
+    .createHash("md5")
     .update(word)
-    .digest('hex');
+    .digest("hex");
 };
 
 var UserSchema = new Schema({
@@ -19,23 +17,23 @@ var UserSchema = new Schema({
   password: String
 });
 
-UserSchema.virtual('id').get(function() {
+UserSchema.virtual("id").get(function() {
   return this._id.toString();
 });
 
-UserSchema.virtual('avatarUrl').get(function() {
+UserSchema.virtual("avatarUrl").get(function() {
   return url.format({
-    protocol: 'https',
-    host: 'secure.gravatar.com',
-    pathname: '/avatar/' + md5(this.email),
+    protocol: "https",
+    host: "secure.gravatar.com",
+    pathname: "/avatar/" + md5(this.email),
     query: {
       s: 100
     }
   });
 });
 
-UserSchema.pre('save', function(next) {
-  if (!this.isModified('password')) {
+UserSchema.pre("save", function(next) {
+  if (!this.isModified("password")) {
     return next();
   }
 
@@ -74,7 +72,7 @@ UserSchema.methods.authenticate = function(password, cb) {
       if (res) {
         return cb(null, this);
       } else {
-        return cb(null, null, { message: 'Invalid login' });
+        return cb(null, null, { message: "Invalid login" });
       }
     }.bind(this)
   );
@@ -99,4 +97,4 @@ UserSchema.statics.authenticate = function(username, password, cb) {
     });
 };
 
-module.exports = UserSchema;
+export default UserSchema;
