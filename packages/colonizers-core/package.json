@@ -13,10 +13,11 @@
   },
   "dependencies": {
     "async": "1.4.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mersenne-twister": "^1.0.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.188",
     "babel-core": "^6.3.17",
     "babel-preset-es2015": "^6.3.13",
     "code": "^2.0.1",

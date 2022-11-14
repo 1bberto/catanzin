@@ -13,7 +13,7 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
-    title: 'Colonizers',
+    title: 'Catanzin',
     width: 768,
     height: 500,
     minWidth: 768,

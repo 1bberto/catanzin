@@ -19,7 +19,7 @@ Colonizers is an event-driven implementation of the popular board game ["Catan" 
 
 The controller is responsible for determining if a player request is a valid. Upon determining if a move is valid, the controller will emit a series of game events. For instance, when a player requests to end their turn the following events are emitted: end turn, start next turn, roll dice and distribute resources.
 
-#### [Game Coordinator](lib/game-coordinator.js)
+#### [Game Coordinator](lib/game-coordinator.ts)
 
 The coordinator is responsible for mutating the game state based on events emitted by the controller.
 
