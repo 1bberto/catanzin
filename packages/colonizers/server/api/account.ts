@@ -1,6 +1,7 @@
 import Hoek from "hoek";
 import mongoose from "mongoose";
 import { Server, Request, ResponseToolkit } from "@hapi/hapi";
+import Joi from "joi";
 
 export default class AccountApi {
   name: string = "api/account";
@@ -40,31 +41,31 @@ export default class AccountApi {
         description: "Updates the account information for the current user.",
         auth: {
           strategy: "cookie"
+        },
+        validate: {
+          payload: Joi.object().keys({
+            username: Joi.string()
+              .required()
+              .description("Username"),
+            name: Joi.string()
+              .required()
+              .description("Name"),
+            email: Joi.string()
+              .email()
+              .required()
+              .description("Email"),
+            password: Joi.string()
+              .optional()
+              .allow("")
+              .description("Password"),
+            password2: Joi.string()
+              .optional()
+              .allow(""),
+            artifact: Joi.string()
+              .optional()
+              .allow("")
+          })
         }
-        // validate: {
-        //   payload: Joi.object({
-        //     username: Joi.string()
-        //       .required()
-        //       .description("Username"),
-        //     name: Joi.string()
-        //       .required()
-        //       .description("Name"),
-        //     email: Joi.string()
-        //       .email()
-        //       .required()
-        //       .description("Email"),
-        //     password: Joi.string()
-        //       .optional()
-        //       .allow("")
-        //       .description("Password"),
-        //     password2: Joi.string()
-        //       .optional()
-        //       .allow(""),
-        //     artifact: Joi.string()
-        //       .optional()
-        //       .allow("")
-        //   })
-        // },
       },
       handler: async (request: Request, toolkit: ResponseToolkit) => {
         var User = mongoose.model("User");

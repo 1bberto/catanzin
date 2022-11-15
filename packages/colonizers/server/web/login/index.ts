@@ -1,4 +1,4 @@
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import Boom from "@hapi/boom";
 import mongoose from "mongoose";
 import { Server, Request, ResponseToolkit } from "@hapi/hapi";
@@ -18,13 +18,16 @@ export default class LoginPage {
         var credentials = request.auth.credentials || { session: {} };
         var session: any = credentials.session || {};
 
-        Session.findByIdAndRemove(session._id, function(err) {
-          if (err) {
-            return reply.response(new Boom.Boom(err));
-          }
+        return new Promise(resolve => {
+          Session.findByIdAndRemove(session._id, function(err) {
+            if (err) {
+              return resolve(new Boom.Boom(err));
+            }
 
-          request.cookieAuth.clear();
-          reply.redirect("/");
+            request.cookieAuth.clear();
+
+            resolve(reply.redirect("/"));
+          });
         });
       }
     });
@@ -60,14 +63,14 @@ export default class LoginPage {
       method: "POST",
       path: "/login",
       options: {
-        // validate: {
-        //   payload: {
-        //     username: Joi.string()
-        //       .lowercase()
-        //       .required(),
-        //     password: Joi.string().required()
-        //   }
-        // },
+        validate: {
+          payload: Joi.object().keys({
+            username: Joi.string()
+              .lowercase()
+              .required(),
+            password: Joi.string().required()
+          })
+        },
         // plugins: {
         //   "hapi-auth-cookie": {
         //     redirectTo: false
@@ -80,28 +83,33 @@ export default class LoginPage {
         pre: [
           {
             assign: "abuseDetected",
-            method: (request: Request, reply: ResponseToolkit): any => {
+            method: async (
+              request: Request,
+              reply: ResponseToolkit
+            ): Promise<any> => {
               var AuthAttempt = mongoose.model("AuthAttempt");
               var ip = request.info.remoteAddress;
               var username = (request.payload as any).username;
 
-              (AuthAttempt as any).abuseDetected(ip, username, function(
-                err,
-                detected
-              ) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                (AuthAttempt as any).abuseDetected(ip, username, function(
+                  err,
+                  detected
+                ) {
+                  if (err) {
+                    resolve(new Boom.Boom(err));
+                  }
 
-                if (detected) {
-                  return reply.response(
-                    Boom.badRequest(
-                      "Maximum number of auth attempts reached. Please try again later."
-                    )
-                  );
-                }
+                  if (detected) {
+                    resolve(
+                      Boom.badRequest(
+                        "Maximum number of auth attempts reached. Please try again later."
+                      )
+                    );
+                  }
 
-                return reply.response();
+                  resolve(reply.continue);
+                });
               });
             }
           },
@@ -111,15 +119,17 @@ export default class LoginPage {
               var User = mongoose.model("User");
               const { username, password } = request.payload as any;
 
-              (User as any).authenticate(username, password, function(
-                err,
-                user
-              ) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                (User as any).authenticate(username, password, function(
+                  err,
+                  user
+                ) {
+                  if (err) {
+                    return resolve(new Boom.Boom(err));
+                  }
 
-                return reply.response(user);
+                  return resolve(user);
+                });
               });
             }
           },
@@ -134,16 +144,20 @@ export default class LoginPage {
               var ip = request.info.remoteAddress;
               const { username } = request.payload as any;
 
-              AuthAttempt.create({ ip: ip, username: username }, function(err) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                AuthAttempt.create({ ip: ip, username: username }, function(
+                  err
+                ) {
+                  if (err) {
+                    return resolve(new Boom.Boom(err));
+                  }
 
-                return reply.response(
-                  Boom.badRequest(
-                    "Username and password combination not found or account is inactive"
-                  )
-                );
+                  return resolve(
+                    Boom.badRequest(
+                      "Username and password combination not found or account is inactive"
+                    )
+                  );
+                });
               });
             }
           },
@@ -152,28 +166,30 @@ export default class LoginPage {
             method: (request: Request, reply: ResponseToolkit): any => {
               var Session = mongoose.model("Session");
 
-              Session.create(
-                {
-                  user: request.pre.user._id
-                },
-                function(err, session) {
-                  if (err) {
-                    return reply.response(new Boom.Boom(err));
-                  }
+              return new Promise(resolve => {
+                Session.create(
+                  {
+                    user: request.pre.user._id
+                  },
+                  function(err, session) {
+                    if (err) {
+                      return resolve(new Boom.Boom(err));
+                    }
 
-                  return reply.response(session);
-                }
-              );
+                    return resolve(session);
+                  }
+                );
+              });
             }
           }
         ]
       },
       handler: (request: Request, reply: ResponseToolkit, err?: Error): any => {
-        var result = request.pre.session.toSession();
+        const result = request.pre.session.toSession();
 
         request.cookieAuth.set(result);
 
-        return reply.response(result);
+        return reply.redirect("/");
       }
     });
 
@@ -190,20 +206,20 @@ export default class LoginPage {
           mode: "try",
           strategy: "cookie"
         },
-        // validate: {
-        //   payload: {
-        //     name: Joi.string().required(),
-        //     email: Joi.string()
-        //       .email()
-        //       .lowercase()
-        //       .required(),
-        //     username: Joi.string()
-        //       .token()
-        //       .lowercase()
-        //       .required(),
-        //     password: Joi.string().required()
-        //   }
-        // },
+        validate: {
+          payload: Joi.object().keys({
+            name: Joi.string().required(),
+            email: Joi.string()
+              .email()
+              .lowercase()
+              .required(),
+            username: Joi.string()
+              .token()
+              .lowercase()
+              .required(),
+            password: Joi.string().required()
+          })
+        },
         pre: [
           {
             assign: "usernameCheck",
@@ -214,25 +230,25 @@ export default class LoginPage {
                 username: (request.payload as any).username
               };
 
-              const response = User.findOne(conditions, function(err, user) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                User.findOne(conditions, function(err, user) {
+                  if (err) {
+                    return resolve(new Boom.Boom(err));
+                  }
 
-                if (user) {
-                  var response = {
-                    message: "Username already in use."
-                  };
+                  if (user) {
+                    var response = {
+                      message: "Username already in use."
+                    };
 
-                  return reply.response(
-                    Boom.conflict("Username already in use.", response)
-                  );
-                }
+                    return resolve(
+                      Boom.conflict("Username already in use.", response)
+                    );
+                  }
 
-                return reply.response({ username: true });
+                  return resolve({ username: true });
+                });
               });
-
-              return reply.response(response);
             }
           },
           {
@@ -243,22 +259,24 @@ export default class LoginPage {
                 email: (request.payload as any).email
               };
 
-              User.findOne(conditions, function(err, user) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                User.findOne(conditions, function(err, user) {
+                  if (err) {
+                    return resolve(new Boom.Boom(err));
+                  }
 
-                if (user) {
-                  var response = {
-                    message: "Email already in use."
-                  };
+                  if (user) {
+                    var response = {
+                      message: "Email already in use."
+                    };
 
-                  return reply.response(
-                    Boom.conflict("Email already in use.", response)
-                  );
-                }
+                    return resolve(
+                      Boom.conflict("Email already in use.", response)
+                    );
+                  }
 
-                return reply.response({ emailCheck: true });
+                  return resolve({ emailCheck: true });
+                });
               });
             }
           },
@@ -281,12 +299,14 @@ export default class LoginPage {
                 password: password
               });
 
-              user.save(function(err) {
-                if (err) {
-                  return reply.response(new Boom.Boom(err));
-                }
+              return new Promise(resolve => {
+                user.save(function(err) {
+                  if (err) {
+                    return resolve(new Boom.Boom(err));
+                  }
 
-                return reply.response(user);
+                  return resolve(user);
+                });
               });
             }
           },
@@ -294,7 +314,8 @@ export default class LoginPage {
             assign: "session",
             method: (request: Request, reply: ResponseToolkit): any => {
               var Session = mongoose.model("Session");
-              Session.create(
+
+              return Session.create(
                 {
                   user: request.pre.user._id
                 },

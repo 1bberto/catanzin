@@ -7,6 +7,8 @@ import Player from "./player";
 import observableProps from "./observable-properties";
 
 export default class Factory {
+  tileset: any;
+
   constructor(options) {
     this.tileset = options.tileset;
 

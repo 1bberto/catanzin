@@ -20,6 +20,8 @@ import LoginPage from "./web/login";
 import IndexPage from "./web";
 import Assets from "./assets";
 import Mongoose from "./mongoose";
+import Joi from "joi";
+import LobbyPage from "./web/lobby";
 
 export default class Server {
   private static _instance: Hapi.Server;
@@ -30,6 +32,8 @@ export default class Server {
         host: process.env.COLONIZERS_HOST || process.env.HOST || "localhost",
         port: process.env.COLONIZERS_PORT || process.env.PORT || 8080
       });
+
+      await Server._instance.validator(Joi);
 
       await Server._instance.register(inert);
 
@@ -165,6 +169,13 @@ export default class Server {
         }
       ]);
 
+      // Lobby
+      await Server._instance.register([
+        {
+          plugin: new LobbyPage()
+        }
+      ]);
+
       // Assets
       await Server._instance.register([
         {
@@ -186,6 +197,14 @@ export default class Server {
       var isProd = process.env.NODE_ENV === "production";
 
       views(Server._instance, isProd);
+
+      Server._instance.events.on("request", (request, event) => {
+        console.log(`Event: ${JSON.stringify(event)}`);
+      });
+
+      Server._instance.events.on("response", (request: any) => {
+        console.log(`Response Status Code: ${request.response.statusCode}`);
+      });
 
       await Server._instance.start();
 

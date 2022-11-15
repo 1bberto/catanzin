@@ -1,4 +1,4 @@
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import mongoose from "mongoose";
 
 exports.register = function(server, options, next) {

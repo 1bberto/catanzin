@@ -1,5 +1,5 @@
 import Boom from "@hapi/boom";
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import Hoek from "hoek";
 import mongoose from "mongoose";
 import { Server, Request, ResponseToolkit, ResponseObject } from "@hapi/hapi";
@@ -45,11 +45,11 @@ export default class GamesApi {
         // plugins: {
         //   "hapi-io": "get-game"
         // },
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         auth: {
           strategy: "cookie"
         },
@@ -64,7 +64,7 @@ export default class GamesApi {
         request: Request,
         toolkit: ResponseToolkit
       ): ResponseObject => {
-        return toolkit.response(request.pre.room.game);
+        return request.pre.room.game;
       }
     });
 
@@ -73,11 +73,11 @@ export default class GamesApi {
       path: options.basePath + "/rooms/{roomId}/game/stream",
       options: {
         description: "Returns a list of events for a specific game.",
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         auth: {
           strategy: "cookie"
         },
@@ -108,20 +108,20 @@ export default class GamesApi {
         // plugins: {
         //   "hapi-io": "game-event"
         // },
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   },
-        //   payload: {
-        //     event: Joi.string()
-        //       .lowercase()
-        //       .required()
-        //       .description("Event name"),
-        //     data: Joi.object()
-        //       .optional()
-        //       .description("Event data")
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          },
+          payload: Joi.object().keys({
+            event: Joi.string()
+              .lowercase()
+              .required()
+              .description("Event name"),
+            data: Joi.object()
+              .optional()
+              .description("Event data")
+          })
+        },
         auth: {
           strategy: "cookie"
         },

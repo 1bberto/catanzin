@@ -1,5 +1,5 @@
 import Boom from "@hapi/boom";
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import Hoek from "hoek";
 import mongoose from "mongoose";
 import { Server, Request, ResponseToolkit, ResponseObject } from "@hapi/hapi";
@@ -100,11 +100,11 @@ export default class RoomsApi {
       options: {
         description:
           "Returns a single room, specified by the roomId parameter.",
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         auth: {
           strategy: "cookie"
         },
@@ -133,11 +133,11 @@ export default class RoomsApi {
         // plugins: {
         //   "hapi-io": "room-users"
         // },
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         auth: {
           strategy: "cookie"
         },
@@ -169,19 +169,19 @@ export default class RoomsApi {
         auth: {
           strategy: "cookie"
         },
-        // validate: {
-        //   payload: {
-        //     scenario: Joi.string()
-        //       .required()
-        //       .description("Colonizers scenario ID"),
-        //     numPlayers: Joi.number()
-        //       .integer()
-        //       .required()
-        //       .min(3)
-        //       .max(4)
-        //       .description("Number of players")
-        //   }
-        // },
+        validate: {
+          payload: Joi.object().keys({
+            scenario: Joi.string()
+              .required()
+              .description("Colonizers scenario ID"),
+            numPlayers: Joi.number()
+              .integer()
+              .required()
+              .min(3)
+              .max(4)
+              .description("Number of players")
+          })
+        },
         handler: (
           request: Request,
           reply: ResponseToolkit
@@ -221,11 +221,11 @@ export default class RoomsApi {
         auth: {
           strategy: "cookie"
         },
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         pre: [
           {
             assign: "room",
@@ -292,11 +292,11 @@ export default class RoomsApi {
         auth: {
           strategy: "cookie"
         },
-        // validate: {
-        //   params: {
-        //     roomId: (server.plugins as any).validations.roomId.required()
-        //   }
-        // },
+        validate: {
+          params: {
+            roomId: (server.plugins as any).validations.roomId.required()
+          }
+        },
         pre: [
           {
             assign: "room",

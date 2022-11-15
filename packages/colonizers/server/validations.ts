@@ -1,4 +1,4 @@
-import Joi from "@hapi/joi";
+import Joi from "joi";
 import { Server } from "@hapi/hapi";
 
 export default class Validations {

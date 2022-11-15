@@ -50,3 +50,9 @@ Colonizers is very much a work in progress, with several critical gameplay
 features still to be implemented. Breaking changes are to be expected, and the database schema may change.
 
 Contributions (both issues and pull requests) are very welcome!
+
+## WIP
+
+[x] - convert all apis to TypeScript - @1bberto
+[] - convert all views to TypeScript - @1bberto
+[] - convert game objects to TypeScript - @1bberto

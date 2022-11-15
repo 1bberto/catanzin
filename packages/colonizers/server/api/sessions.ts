@@ -26,10 +26,10 @@ export default class SessionsApi {
           .sort("-lastActive")
           .exec(function(err, user) {
             if (err) {
-              return reply.response(new Boom.Boom(err));
+              return new Boom.Boom(err);
             }
 
-            return reply.response(user);
+            return user;
           });
       }
     });
@@ -41,14 +41,14 @@ export default class SessionsApi {
         description: "Returns a single session, specified by ID.",
         auth: {
           strategy: "cookie"
+        },
+        validate: {
+          params: {
+            sessionId: (server.plugins as any).validations.mongoId
+              .required()
+              .description("Session ID")
+          }
         }
-        // validate: {
-        //   params: {
-        //     sessionId: (server.plugins as any).validations.mongoId
-        //       .required()
-        //       .description("Session ID")
-        //   }
-        // }
       },
       handler: (request: Request, reply: ResponseToolkit, err?: Error): any => {
         var Session = mongoose.model("Session");
@@ -79,14 +79,14 @@ export default class SessionsApi {
         description: "Deletes a single session, specified by ID.",
         auth: {
           strategy: "cookie"
+        },
+        validate: {
+          params: {
+            sessionId: (server.plugins as any).validations.mongoId
+              .required()
+              .description("Session ID")
+          }
         }
-        // validate: {
-        //   params: {
-        //     sessionId: (server.plugins as any).validations.mongoId
-        //       .required()
-        //       .description("Session ID")
-        //   }
-        // }
       },
       handler: (request: Request, reply: ResponseToolkit, err?: Error): any => {
         var Session = mongoose.model("Session");

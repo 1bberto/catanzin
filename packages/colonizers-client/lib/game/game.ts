@@ -1,6 +1,9 @@
 import emitter from "component-emitter";
 import Game from "colonizers-core/lib/game-objects/game";
+
 export default class UiGame extends Game {
+  emit: any;
+
   constructor(factory, options) {
     super(factory, options);
     emitter(this);

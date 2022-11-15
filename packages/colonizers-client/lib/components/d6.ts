@@ -18,7 +18,7 @@ function DieModel() {
 }
 
 DieModel.prototype.start = function(result, callback) {
-  var sequence = [];
+  var sequence: any[] = [];
   var seqCount = this.random(6) + this.random(6) + this.random(6) + 4;
   var thisRoll = 0;
 

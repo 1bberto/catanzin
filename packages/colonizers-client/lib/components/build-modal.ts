@@ -3,7 +3,7 @@ import templates from "./html-templates";
 import observableProps from "../game/observable-properties";
 import RoomModel from "../model";
 
-function BuildModalModel(roomModel: typeof RoomModel): void {
+function BuildModalModel(roomModel: any): void {
   this.buildCity = this.buildCity.bind(this);
   this.buildSettlement = this.buildSettlement.bind(this);
   this.buildRoad = this.buildRoad.bind(this);

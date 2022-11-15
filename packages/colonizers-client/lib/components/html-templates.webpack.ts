@@ -1,9 +1,9 @@
-import alert from "./alert.html";
-import buildModal from "./build-modal.html";
-import menu from "./menu.html";
-import player from "./player.html";
-import players from "./players.html";
-import tradeModal from "./trade-modal.html";
+var alert = require("./alert.html");
+var buildModal = require("./build-modal.html");
+var menu = require("./menu.html");
+var player = require("./player.html");
+var players = require("./players.html");
+var tradeModal = require("./trade-modal.html");
 
 export default {
   alert,
