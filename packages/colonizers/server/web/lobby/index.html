@@ -1,7 +1,6 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-
       <ul class="nav nav-tabs" role="tablist">
         <li class="active">
           <a href="#open" role="tab" data-toggle="tab">Open games</a>
@@ -16,7 +15,6 @@
 
       <div class="tab-content">
         <div class="tab-pane active" id="open">
-
           <table class="table table-striped">
             {{#rooms}}
             <tr>
@@ -24,11 +22,17 @@
                 {{gameOptions.scenario}}
               </td>
               <td>
-                {{gameOptions.numPlayers}} players
+                type {{gameOptions.numPlayers}} players
               </td>
               <td>
                 Created
                 <span class="date" title="{{isoFormat created}}"></span>
+              </td>
+              <td>
+                total players in lobby {{users.length}}
+              </td>
+              <td>
+                status {{status}}
               </td>
               <td>
                 <a href="{{url}}">Join</a>
@@ -36,11 +40,9 @@
             </tr>
             {{/rooms}}
           </table>
-
         </div>
 
-        <div class="tab-pane" id="mine">
-        </div>
+        <div class="tab-pane" id="mine"></div>
 
         <div class="tab-pane" id="new">
           <form role="form" method="post" action="/api/rooms">
@@ -61,7 +63,6 @@
           </form>
         </div>
       </div>
-
     </div>
   </div>
 </div>

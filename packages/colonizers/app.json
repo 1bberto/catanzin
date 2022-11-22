@@ -1,7 +1,7 @@
 {
-  "name": "Colonizers",
+  "name": "Catanzin",
   "description": "A game based on \"The Settlers of Catan\" by Klaus Teuber.",
-  "repository": "https://github.com/sibartlett/colonizers",
+  "repository": "https://github.com/1bberto/catanzin",
   "addons": ["cloudamqp", "mongolab"],
   "env": {
     "NODE_ENV": {
