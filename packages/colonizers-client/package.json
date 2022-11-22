@@ -24,6 +24,9 @@
     "moment": "2.24.0",
     "screenfull": "2.0.0"
   },
+  "resolutions": {
+    "graceful-fs": "^4.2.10"
+  },
   "devDependencies": {
     "dataurl": "^0.1.0",
     "gulp": "^3.9.0",

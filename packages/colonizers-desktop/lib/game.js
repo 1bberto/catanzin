@@ -4,7 +4,7 @@ var EmitterQueue = require('../../colonizers-core/lib/emitter-queue');
 var GameContext = require('../../colonizers-core/lib/game-context');
 var Client = require('../../colonizers-client');
 var Factory = Client.Factory;
-var tileset = require('../../colonizers-client/public/tilesets/modern.json');
+var tileset = require('../../colonizers-client/public/tilesets/watercolor.json');
 
 var state = {};
 var players = [
